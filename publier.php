@@ -35,12 +35,12 @@
             <form action="" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="video">Sélectionner une vidéo</label>
-                    <input type="file" name="video" placeholder="Inserez votre video">
+                    <input type="file" name="video" placeholder="Inserez votre video"> </br> </br>
                 </div>
 
                 <div class="form-group">
                     <!-- <label for="thumbnail">Sélectionner une miniature</label> -->
-                    <input type="file" name="thumbnail" placeholder="Inserez votre miniature">
+                    <input type="file" name="thumbnail" placeholder="Inserez votre miniature"> </br> </br>
                 </div>
                 <div class="form-group">
                     <label for="title">Titre de la vidéo</label>
