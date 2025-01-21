@@ -1,22 +1,5 @@
-<?php
-require_once 'Database.php';
-require_once 'Auth.php';
-
-$db = new Database();
-$pdo = $db->connect();
-$auth = new Auth($pdo);
-
-$message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = htmlspecialchars(trim($_POST['email']));
-    $password = htmlspecialchars(trim($_POST['password']));
-
-    $message = $auth->login($email, $password);
-}
-?>
-
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,8 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class ="logo">
-        <a href="index.php">
-        <img src="img/log.png" alt="logo" class ="logo">
+        <a href="../Main/index.php">
+        <img src="../IMG/log.png" alt="logo" class ="logo">
         </a>
     </div>
         <div class="login-container">
@@ -46,9 +29,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>N'avez-vous pas un compte? <a href="register.php">Créer un compte</a></p>
             </form>
         </div>
-
-    <?php if (!empty($message)): ?>
-        <p style="color: red;"><?php echo $message; ?></p>
-    <?php endif; ?>
 </body>
 </html>

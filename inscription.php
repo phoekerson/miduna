@@ -1,59 +1,46 @@
 <?php
-require_once 'Database.php';
-require_once 'User.php';
+// Configuration de la base de données
+$serveur = "localhost"; // Adresse du serveur
+$dbname = "midanu_db"; // Nom de votre base de données
+$user = "root"; // Nom d'utilisateur de la base de données
+$password = ""; // Mot de passe de la base de données
 
-$db = new Database();
-$pdo = $db->connect();
-$user = new User($pdo);
+try {
+    // Connexion à la base de données
+    $dbco = new PDO("mysql:host=localhost;dbname=midanu_db", "root", "");
+    $dbco->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = htmlspecialchars(trim($_POST['username']));
-    $email = htmlspecialchars(trim($_POST['email']));
-    $password = htmlspecialchars(trim($_POST['password']));
+    // Récupération des données du formulaire
+    $nom_utilisateur = $_POST["Username"]; // Corrigé pour correspondre au nom du champ
+    $email = $_POST["Email"]; // Corrigé pour correspondre au nom du champ
+    $mot_de_passe = password_hash($_POST["Password"], PASSWORD_DEFAULT); // Hachage du mot de passe
 
-    $message = $user->register($username, $email, $password);
-    echo $message;
+    // Préparation de la requête d'insertion
+    $sth = $dbco->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+
+    // Liaison des paramètres
+    $sth->bindParam(':username', $nom_utilisateur); // Corrigé pour correspondre à la colonne
+    $sth->bindParam(':email', $email);
+    $sth->bindParam(':password', $mot_de_passe); // Corrigé pour correspondre à la colonne
+
+    // Exécution de la requête
+    if ($sth->execute()) {
+        echo "Nouvel utilisateur créé avec succès.";
+    } else {
+        echo "Erreur lors de la création de l'utilisateur.";
+    }
+} catch (PDOException $e) {
+    echo 'Erreur : ' . $e->getMessage();
 }
 ?>
-
-<!-- <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription</title>
-</head>
-<body>
-    <form method="POST" action="register.php">
-        <label for="username">Nom d'utilisateur :</label>
-        <input type="text" name="username" id="username" required>
-        <br>
-        <label for="email">Email :</label>
-        <input type="email" name="email" id="email" required>
-        <br>
-        <label for="password">Mot de passe :</label>
-        <input type="password" name="password" id="password" required>
-        <br>
-        <button type="submit">S'inscrire</button>
-    </form>
-</body> -->
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
-    <link rel="stylesheet" href="styles/login.css">
-    <link rel="stylesheet" href="styles/register.css"> 
+    <link rel="stylesheet" href="../STYLES/connexion.css">
+    <link rel="stylesheet" href="../STYLES/inscription.css"> 
     <style>
          body {
     font-family: 'Arial', sans-serif;
@@ -65,8 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class ="logo">
-        <a href="index.php">
-        <img src="img/log.png" alt="logo" class ="logo">
+        <a href="../Main/index.php">
+        <img src="../IMG/log.png" alt="logo" class ="logo">
         </a>
     </div>
     <div class="login-container">
@@ -78,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <span class="upload-text" onclick="document.getElementById('file').click();">Ajouter une photo de profil</span>
             <input type="file" id="file" class="file-input" accept="image/*" onchange="loadFile(event)" style="display:none;">
-            </br></br>
+            <br><br>
             <div class="input-group">
                 <label for="username">Nom d'utilisateur:</label>
                 <input type="text" id="Username" name="username" required>
@@ -100,3 +87,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="../Main/script.js"></script>
 </body>
 </html>
+?>

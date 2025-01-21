@@ -1,0 +1,86 @@
+.navbar {
+    background-color:#4a90e2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    position: relative; /* Nécessaire pour positionner le sous-menu */
+}
+
+.dropdown {
+    display: none; /* Masquer le sous-menu par défaut */
+    position: absolute; /* Positionner le sous-menu par rapport à l'élément parent */
+    background-color: #333; /* Couleur de fond du sous-menu */
+    list-style-type: none;
+    padding: 0;
+    margin: 0; /* Supprimer la marge par défaut */
+    z-index: 1000; /* Assurez-vous que le sous-menu est au-dessus des autres éléments */
+    width: 200px;
+}
+
+.nav-item:hover .dropdown {
+    display: block; /* Afficher le sous-menu au survol de l'élément parent */
+}
+
+.dropdown li {
+    float: none; /* Les éléments du sous-menu ne doivent pas être alignés horizontalement */
+}
+
+.dropdown li a {
+    padding: 10px 20px; /* Ajuster le padding pour le sous-menu */
+    color: rgb(252, 252, 252); /* Couleur du texte dans le sous-menu */
+    text-decoration: none; /* Pas de soulignement pour les liens du sous-menu */
+    display: block; /* Permet au lien de remplir l'espace disponible */
+}
+
+.dropdown li a:hover {
+    background-color: var(--primary-color); /* Changer la couleur de fond au survol */
+}
+
+.search-bar {
+    position: relative;
+}
+
+.footer {
+    display: flex; /* Utiliser flexbox pour aligner les éléments sur la même ligne */
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
+    background-color: #f1f1f1; /* Couleur de fond */
+    padding: 5px; /* Espacement interne */
+}
+
+.footer-link {
+    margin-bottom: 10px; /* Espacement entre les liens */
+}
+.footer-link a {
+    text-decoration: none; /* Enlever le soulignement du lien */
+    color: #333; /* Couleur du texte du lien */
+}
+
+.footer-content {
+    margin-bottom: 10px; /* Espacement entre le contenu et les icônes */
+}
+
+.footer-social {
+    display: flex; /* Utiliser flexbox pour aligner les icônes sur la même ligne */
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
+}
+
+.footer-social a {
+    margin: 0 10px; /* Espacement entre les icônes */
+    color: #333; /* Couleur des icônes */
+    font-size: 24px; /* Taille des icônes */
+    text-decoration: none; /* Enlever le soulignement */
+}
+
+.footer-social a:hover {
+    color: #007bff; /* Couleur au survol */
+}
+
+.footer-link,
+.footer-content,
+.footer-social {
+    margin: 0 40px; /* Réduire l'espacement entre tous les éléments */
+}
+
