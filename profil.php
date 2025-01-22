@@ -63,7 +63,7 @@ $email = $_SESSION['email'];
 
                 <!-- User Name -->
                 <h1 class="username"><?php echo htmlspecialchars($username); ?></h1><br>
-                <button class="btn" onclick="window.location.href='liste.php'">Nouvelle publication</button>
+                <button class="btn" onclick="window.location.href='publier.php'">Nouvelle publication</button>
 
                 <!-- Stats -->
                 <div class="stats-container">

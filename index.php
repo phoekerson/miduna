@@ -58,7 +58,8 @@
     </main>
 
     <div class="container">
-        <button class="btn" onclick="window.location.href='login.php';">Commencer</button>
+        <button class="btn" onclick="window.location.href='login.php';">Commencer</button> </br> </br>
+        <button class="btn" onclick="window.location.href='liste.php';">Regarder les videos</button>
     </div>
 
     <footer class="footer">

@@ -1,14 +1,5 @@
 <?php
-// Configuration de la base de données
-$serveur = "localhost"; // Adresse du serveur
-$dbname = "midanu_db"; // Nom de votre base de données
-$user = "root"; // Nom d'utilisateur de la base de données
-$password = ""; // Mot de passe de la base de données
-
-try {
-    // Connexion à la base de données
-    $dbco = new PDO("mysql:host=localhost;dbname=midanu_db", "root", "");
-    $dbco->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+include 'database.php';
 
     // Récupération des données du formulaire
     $nom_utilisateur = $_POST["Username"]; // Corrigé pour correspondre au nom du champ
@@ -29,9 +20,6 @@ try {
     } else {
         echo "Erreur lors de la création de l'utilisateur.";
     }
-} catch (PDOException $e) {
-    echo 'Erreur : ' . $e->getMessage();
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -84,7 +72,6 @@ try {
         </form>
         <p>Avez-vous déjà un compte? <a href="connexion.php">Se connecter</a></p>
     </div>
-    <script src="../Main/script.js"></script>
 </body>
 </html>
 ?>
