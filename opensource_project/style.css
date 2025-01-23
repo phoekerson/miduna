@@ -1,0 +1,15 @@
+*{
+	padding: 0;
+	margin: 0;
+}
+.container-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-top:50px ;
+
+}
+
+.btn-blue {
+	color: blue;
+}

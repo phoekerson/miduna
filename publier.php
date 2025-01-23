@@ -6,87 +6,96 @@ $username = "root"; // Nom d'utilisateur
 $password = ""; // Mot de passe
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Erreur de connexion : " . $e->getMessage());
 }
 
-// Vérifier si le formulaire est soumis
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Dossier où les fichiers seront enregistrés
+// Vérification si le formulaire a été soumis
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $title = htmlspecialchars($_POST['title']); // Récupération et sécurisation du titre
     $uploadDir = "uploads/";
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true); // Crée le dossier s'il n'existe pas
-    }
+    $videoPath = "";
+    $thumbnailPath = "";
 
-    // Variables pour les fichiers
-    $videoPath = null;
-    $thumbnailPath = null;
+    // Vérification et upload de la vidéo
+    if (!empty($_FILES['video']['name'])) {
+        $videoName = basename($_FILES['video']['name']);
+        $videoPath = $uploadDir . uniqid() . "_" . $videoName; // Chemin unique
+        $videoTmp = $_FILES['video']['tmp_name'];
 
-    // Vérifier et gérer l'upload de la vidéo
-    if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
-        $videoTmpPath = $_FILES['video']['tmp_name'];
-        $videoName = uniqid() . "_" . basename($_FILES['video']['name']);
-        $videoPath = $uploadDir . $videoName;
-
-        if (move_uploaded_file($videoTmpPath, $videoPath)) {
-            echo "Vidéo uploadée avec succès !<br>";
+        // Vérifier que le fichier est une vidéo
+        $allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+        if (in_array($_FILES['video']['type'], $allowedVideoTypes)) {
+            if (move_uploaded_file($videoTmp, $videoPath)) {
+                echo "Vidéo uploadée avec succès !<br>";
+            } else {
+                echo "Erreur lors de l'upload de la vidéo.<br>";
+            }
         } else {
-            echo "Erreur lors de l'upload de la vidéo.<br>";
+            echo "Seules les vidéos MP4, WEBM, et OGG sont autorisées.<br>";
         }
     }
 
-    // Vérifier et gérer l'upload de la miniature
-    if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
-        $thumbnailTmpPath = $_FILES['thumbnail']['tmp_name'];
-        $thumbnailName = uniqid() . "_" . basename($_FILES['thumbnail']['name']);
-        $thumbnailPath = $uploadDir . $thumbnailName;
+    // Vérification et upload de la miniature
+    if (!empty($_FILES['thumbnail']['name'])) {
+        $thumbnailName = basename($_FILES['thumbnail']['name']);
+        $thumbnailPath = $uploadDir . uniqid() . "_" . $thumbnailName; // Chemin unique
+        $thumbnailTmp = $_FILES['thumbnail']['tmp_name'];
 
-        if (move_uploaded_file($thumbnailTmpPath, $thumbnailPath)) {
-            echo "Miniature uploadée avec succès !<br>";
+        // Vérifier que le fichier est une image
+        $allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (in_array($_FILES['thumbnail']['type'], $allowedImageTypes)) {
+            if (move_uploaded_file($thumbnailTmp, $thumbnailPath)) {
+                echo "Miniature uploadée avec succès !<br>";
+            } else {
+                echo "Erreur lors de l'upload de la miniature.<br>";
+            }
         } else {
-            echo "Erreur lors de l'upload de la miniature.<br>";
+            echo "Seules les images JPEG, PNG, et GIF sont autorisées.<br>";
         }
     }
 
-    // Insérer les chemins des fichiers dans la base de données
-    if ($videoPath && $thumbnailPath) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO uploads (video_path, thumbnail_path, upload_date) VALUES (:video_path, :thumbnail_path, NOW())");
-            $stmt->bindParam(':video_path', $videoPath);
-            $stmt->bindParam(':thumbnail_path', $thumbnailPath);
-            $stmt->execute();
+    // Insérer les données dans la base de données
+    if (!empty($title) && !empty($videoPath) && !empty($thumbnailPath)) {
+        $stmt = $pdo->prepare("INSERT INTO uploads (video_title, video_path, thumbnail_path, upload_date) VALUES (:video_title, :video_path, :thumbnail_path, NOW())");
+        $stmt->bindParam(':video_title', $title);
+        $stmt->bindParam(':video_path', $videoPath);
+        $stmt->bindParam(':thumbnail_path', $thumbnailPath);
 
-            echo "Les fichiers ont été enregistrés dans la base de données avec succès !<br>";
-        } catch (PDOException $e) {
-            echo "Erreur lors de l'insertion dans la base de données : " . $e->getMessage();
+        if ($stmt->execute()) {
+            echo "Vidéo et miniature enregistrées avec succès dans la base de données !";
+        } else {
+            echo "Erreur lors de l'enregistrement dans la base de données.";
         }
     } else {
-        echo "Les fichiers n'ont pas pu être uploadés correctement.<br>";
+        echo "Veuillez remplir tous les champs et uploader les fichiers.";
     }
 }
 ?>
 
-
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uploader une vidéo et une miniature</title>
+    <title>Publier une vidéo</title>
+    <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-    <h1>Uploader une vidéo et une miniature</h1>
-    <form action="publier.php" method="POST" enctype="multipart/form-data">
-        <label for="video">Sélectionnez une vidéo :</label><br>
-        <input type="file" name="video" id="video" accept="video/*" required><br><br>
+    <h1>Publier une vidéo</h1>
+    <form action="publier.php" method="post" enctype="multipart/form-data">
+        <label for="title">Titre de la vidéo :</label><br>
+        <input type="text" id="title" name="title" required><br><br>
 
-        <label for="thumbnail">Sélectionnez une miniature :</label><br>
-        <input type="file" name="thumbnail" id="thumbnail" accept="image/*" required><br><br>
+        <label for="video">Vidéo (MP4, WEBM, OGG) :</label><br>
+        <input type="file" id="video" name="video" accept="video/mp4,video/webm,video/ogg" required><br><br>
 
-        <button type="submit">Uploader</button>
+        <label for="thumbnail">Miniature (JPEG, PNG, GIF) :</label><br>
+        <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg,image/png,image/gif" required><br><br>
+
+        <button type="submit">Publier</button>
     </form>
 </body>
 </html>
-

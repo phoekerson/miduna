@@ -27,7 +27,7 @@ class User
                 'email' => $email,
                 'password' => $hashedPassword
             ])) {
-                return "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+               header("location:login.php");
             } else {
                 return "Une erreur est survenue. Veuillez réessayer.";
             }

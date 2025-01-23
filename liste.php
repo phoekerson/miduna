@@ -48,14 +48,16 @@
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Récupérer les vidéos depuis la base de données
-        $stmt = $pdo->query("SELECT video_path, thumbnail_path FROM uploads ORDER BY upload_date DESC");
+        $stmt = $pdo->query("SELECT video_title, video_path, thumbnail_path FROM uploads ORDER BY upload_date DESC");
 
-        // Afficher chaque vidéo
+        // Afficher chaque vidéo avec son titre
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $title = $row['video_title'];
             $videoPath = $row['video_path'];
             $thumbnailPath = $row['thumbnail_path'];
 
             echo '<div class="video-item">';
+            echo '<h3>' . htmlspecialchars($title) . '</h3>'; // Afficher le titre
             echo '<video controls width="400" poster="' . htmlspecialchars($thumbnailPath) . '">';
             echo '<source src="' . htmlspecialchars($videoPath) . '" type="video/mp4">';
             echo "Votre navigateur ne supporte pas la lecture vidéo.";
