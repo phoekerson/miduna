@@ -1,0 +1,105 @@
+
+
+/* Style général du corps */
+body {
+    font-family: 'Arial', sans-serif;
+    background: ash color(while red green blue); /* Dégradé de fond */
+    margin: 0;
+    padding: 0;
+}
+
+/* Conteneur du formulaire de connexion */
+.login-container {
+    max-width: 400px; /* Largeur maximale */
+    margin: 100px auto; /* Centrer verticalement et horizontalement */
+    background-color: #fff; /* Couleur de fond blanche */
+    padding: 30px; /* Espacement interne */
+    border-radius: 10px; /* Coins arrondis */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Ombre portée */
+    animation: fadeIn 1s; /* Animation d'apparition */
+}
+
+/* Animation d'apparition */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Style du titre */
+h2 {
+    text-align: center;
+    color: #333; /* Couleur du texte */
+}
+
+/* Style des étiquettes */
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Style des champs d'entrée */
+input[type="email"],
+input[type="password"] {
+    width: 100%; /* Prend toute la largeur disponible */
+    padding: 10px; /* Espacement interne */
+    margin-bottom: 15px; /* Espacement entre les champs */
+    border: 2px solid #007BFF; /* Bordure bleue */
+    border-radius: 5px; /* Coins arrondis */
+    transition: border-color 0.3s ease; /* Transition douce pour la couleur de bordure */
+}
+
+/* Changement de couleur au focus sur les champs d'entrée */
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #0056b3; /* Couleur de bordure au focus */
+}
+
+/* Style des boutons */
+button {
+    width: 100%; /* Prend toute la largeur disponible */
+    padding: 10px;
+    background-color: #007BFF; /* Couleur de fond bleue */
+    color: white; /* Couleur du texte en blanc */
+    border: none; /* Pas de bordure par défaut */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur pointeur au survol */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transition douce pour la couleur et l'animation */
+}
+
+/* Effet au survol du bouton */
+button:hover {
+    background-color: #0056b3; /* Couleur plus foncée au survol */
+    transform: scale(1.05); /* Légère augmentation de taille au survol */
+}
+
+/* Style pour les liens dans le formulaire */
+p {
+    text-align: center;
+}
+
+a {
+    color: #007BFF; /* Couleur du lien bleue */
+}
+
+a:hover {
+    text-decoration: underline; /* Soulignement au survol du lien */
+}
+label {
+    color: #333; /* Exemple de style pour les labels */
+}
+
+input[type="text"] {
+    border: 2px solid #007BFF; /* Exemple de style pour les champs de texte */
+    width: 100%; /* Prend toute la largeur disponible */
+    padding: 10px; /* Espacement interne */
+    margin-bottom: 15px; /* Espacement entre les champs */
+    border: 2px solid #007BFF; /* Bordure bleue */
+    border-radius: 5px; /* Coins arrondis */
+    transition: border-color 0.3s ease; /* Transition douce pour la couleur de bordure */
+}
+
+.logo{
+    padding-left: 1%;
+    padding-top: 0.5%;
+}
+

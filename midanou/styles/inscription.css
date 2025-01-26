@@ -1,0 +1,206 @@
+.file-input {
+    display: none; /* Masque l'input de fichier */
+}
+.profile-pic {
+    width: 150px; /* Largeur du cercle */
+    height: 150px; /* Hauteur du cercle */
+    border-radius: 50%; /* Bord arrondi pour faire un cercle */
+    overflow: hidden; /* Masque l'image qui déborde */
+    border: 2px solid #ccc; /* Bordure autour du cercle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto; /* Centre le cercle horizontalement */
+}
+
+#profileImage {
+    width: 100%; /* Prend toute la largeur du conteneur */
+    height: auto; /* Hauteur automatique pour conserver les proportions */
+    display: none; /* Masqué par défaut jusqu'à ce qu'une image soit chargée */
+}
+
+.upload-text {
+    cursor: pointer; /* Curseur pointer pour indiquer que c'est cliquable */
+    font-size: 16px; /* Taille de la police */
+    display: block;
+    text-align: center; /* Centre le texte */
+}
+.text{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f3e8ff 0%, #e9d5ff 100%);
+    background-color: white;
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    background: white;
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+   
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.profile-picture-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem;
+}
+
+.profile-picture-border {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ffffff, #db2929);
+    animation: pulse 2s infinite;
+}
+
+.profile-picture {
+    position: absolute;
+    inset: 12px;
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid white;
+}
+
+.username {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+}
+
+.handle {
+    font-size: 1.25rem;
+    color: #6b7280;
+    margin-bottom: 3rem;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+   
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    border-radius: 1rem;
+   
+}
+
+.stat-card.purple {
+    background-color: #ffffff;
+    color: #000000;
+   
+}
+
+.stat-card.pink {
+    background-color: #ffffff;
+    color: #060003;
+}
+
+.stat-card.blue {
+    background-color: #ffffff;
+    color: #000406;
+}
+
+.stat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.stat-header svg {
+    width: 24px;
+    height: 24px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-picture-container {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .username {
+        font-size: 2rem;
+    }
+    
+    .stats-container {
+        gap: 0.5rem;
+    }
+    
+    .stat-card {
+        padding: 0.5rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
