@@ -92,5 +92,75 @@ $email = $_SESSION['email'];
                 </div>
             </div>
         </div>
+       <?php
+       $host = "localhost";
+       $dbname = "miduna";
+       $username = "root";
+       $password = "";
+   
+       try {
+           $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+           $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $limit = 5;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+
+        $query = "SELECT id, video_title, video_path, thumbnail_path FROM uploads";
+        if (!empty($search)) {
+            $query .= " WHERE video_title LIKE :search";
+        }
+        $query .= " ORDER BY upload_date DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $pdo->prepare($query);
+        if (!empty($search)) {
+            $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $videoId = $row['id'];
+                $title = htmlspecialchars($row['video_title']);
+                $videoPath = htmlspecialchars($row['video_path']);
+                $thumbnailPath = htmlspecialchars($row['thumbnail_path']);
+                echo '<div class="video-item">';
+                echo '<h3>' . $title . '</h3>';
+                echo '<video controls width="400" poster="' . $thumbnailPath . '">';
+                echo '<source src="' . $videoPath . '" type="video/mp4">';
+                echo "Votre navigateur ne supporte pas la lecture vidéo.";
+                echo '</video>
+                <button> <a href="delete.php?id=' . $videoId . '"> Supprimer la vidéo </a> </button>
+                <button><a href="update.php?id=' . $videoId . '">Modifier la vidéo</a></button>';
+                
+               
+            }
+        } else {
+            echo '<p>Aucune recette trouvée.</p>';
+        }
+
+        $countQuery = "SELECT COUNT(*) FROM uploads";
+        if (!empty($search)) {
+            $countQuery .= " WHERE video_title LIKE :search";
+        }
+        $countStmt = $pdo->prepare($countQuery);
+        if (!empty($search)) {
+            $countStmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+        }
+        $countStmt->execute();
+        $totalResults = $countStmt->fetchColumn();
+        $totalPages = ceil($totalResults / $limit);
+
+        echo '<div class="pagination">';
+        for ($i = 1; $i <= $totalPages; $i++) {
+            echo '<a href="?page=' . $i . '&search=' . urlencode($search) . '"' . ($i == $page ? ' class="active"' : '') . '>' . $i . '</a> ';
+        }
+        echo '</div>';
+    } catch (PDOException $e) {
+        echo "Erreur : " . $e->getMessage();
+    }
+    ?>
     </body>
 </html>

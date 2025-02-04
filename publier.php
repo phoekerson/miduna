@@ -1,77 +1,82 @@
 <?php
-// Connexion à la base de données
-$host = "localhost"; // Remplacez par votre hôte
-$dbname = "miduna"; // Nom de la base de données
-$username = "root"; // Nom d'utilisateur
-$password = ""; // Mot de passe
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
+class VideoUploader
+{
+    private $pdo;
+    private $uploadDir = "uploads/";
+
+    public function __construct($host, $dbname, $username, $password)
+    {
+        $this->connectToDatabase($host, $dbname, $username, $password);
+    }
+
+    private function connectToDatabase($host, $dbname, $username, $password)
+    {
+        try {
+            $this->pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Erreur de connexion : " . $e->getMessage());
+        }
+    }
+
+    public function uploadFile($file, $allowedTypes, $filePrefix)
+    {
+        $filePath = "";
+        if (!empty($file['name'])) {
+            $fileName = basename($file['name']);
+            $filePath = $this->uploadDir . uniqid() . "_" . $fileName;
+            $fileTmp = $file['tmp_name'];
+
+            if (in_array($file['type'], $allowedTypes)) {
+                if (move_uploaded_file($fileTmp, $filePath)) {
+                    return $filePath;
+                } else {
+                    return "Erreur lors de l'upload du fichier $filePrefix.";
+                }
+            } else {
+                return "Seuls les fichiers de type $filePrefix sont autorisés.";
+            }
+        }
+        return null;
+    }
+
+    public function insertData($title, $videoPath, $thumbnailPath)
+    {
+        if (!empty($title) && !empty($videoPath) && !empty($thumbnailPath)) {
+            $stmt = $this->pdo->prepare("INSERT INTO uploads (video_title, video_path, thumbnail_path, upload_date) 
+                                         VALUES (:video_title, :video_path, :thumbnail_path, NOW())");
+            $stmt->bindParam(':video_title', $title);
+            $stmt->bindParam(':video_path', $videoPath);
+            $stmt->bindParam(':thumbnail_path', $thumbnailPath);
+
+            if ($stmt->execute()) {
+                return "Vidéo et miniature enregistrées avec succès dans la base de données !";
+            } else {
+                return "Erreur lors de l'enregistrement dans la base de données.";
+            }
+        } else {
+            return "Veuillez remplir tous les champs et uploader les fichiers.";
+        }
+    }
 }
+
+// Instanciation de la classe
+$videoUploader = new VideoUploader("localhost", "miduna", "root", "");
 
 // Vérification si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = htmlspecialchars($_POST['title']); // Récupération et sécurisation du titre
-    $uploadDir = "uploads/";
-    $videoPath = "";
-    $thumbnailPath = "";
 
     // Vérification et upload de la vidéo
-    if (!empty($_FILES['video']['name'])) {
-        $videoName = basename($_FILES['video']['name']);
-        $videoPath = $uploadDir . uniqid() . "_" . $videoName; // Chemin unique
-        $videoTmp = $_FILES['video']['tmp_name'];
-
-        // Vérifier que le fichier est une vidéo
-        $allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-        if (in_array($_FILES['video']['type'], $allowedVideoTypes)) {
-            if (move_uploaded_file($videoTmp, $videoPath)) {
-                echo "Vidéo uploadée avec succès !<br>";
-            } else {
-                echo "Erreur lors de l'upload de la vidéo.<br>";
-            }
-        } else {
-            echo "Seules les vidéos MP4, WEBM, et OGG sont autorisées.<br>";
-        }
-    }
+    $videoPath = $videoUploader->uploadFile($_FILES['video'], ['video/mp4', 'video/webm', 'video/ogg'], 'vidéo');
 
     // Vérification et upload de la miniature
-    if (!empty($_FILES['thumbnail']['name'])) {
-        $thumbnailName = basename($_FILES['thumbnail']['name']);
-        $thumbnailPath = $uploadDir . uniqid() . "_" . $thumbnailName; // Chemin unique
-        $thumbnailTmp = $_FILES['thumbnail']['tmp_name'];
-
-        // Vérifier que le fichier est une image
-        $allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (in_array($_FILES['thumbnail']['type'], $allowedImageTypes)) {
-            if (move_uploaded_file($thumbnailTmp, $thumbnailPath)) {
-                echo "Miniature uploadée avec succès !<br>";
-            } else {
-                echo "Erreur lors de l'upload de la miniature.<br>";
-            }
-        } else {
-            echo "Seules les images JPEG, PNG, et GIF sont autorisées.<br>";
-        }
-    }
+    $thumbnailPath = $videoUploader->uploadFile($_FILES['thumbnail'], ['image/jpeg', 'image/png', 'image/gif'], 'miniature');
 
     // Insérer les données dans la base de données
-    if (!empty($title) && !empty($videoPath) && !empty($thumbnailPath)) {
-        $stmt = $pdo->prepare("INSERT INTO uploads (video_title, video_path, thumbnail_path, upload_date) VALUES (:video_title, :video_path, :thumbnail_path, NOW())");
-        $stmt->bindParam(':video_title', $title);
-        $stmt->bindParam(':video_path', $videoPath);
-        $stmt->bindParam(':thumbnail_path', $thumbnailPath);
-
-        if ($stmt->execute()) {
-            echo "Vidéo et miniature enregistrées avec succès dans la base de données !";
-        } else {
-            echo "Erreur lors de l'enregistrement dans la base de données.";
-        }
-    } else {
-        echo "Veuillez remplir tous les champs et uploader les fichiers.";
-    }
+    $message = $videoUploader->insertData($title, $videoPath, $thumbnailPath);
+    echo $message;
 }
 ?>
 

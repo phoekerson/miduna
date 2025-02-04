@@ -1,28 +1,32 @@
 <?php
+class Register {
+    private $user;
+
+    public function __construct(User $user) {
+        $this->user = $user;
+    }
+
+    public function handleRequest() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = htmlspecialchars(trim($_POST['username']));
+            $email = htmlspecialchars(trim($_POST['email']));
+            $password = htmlspecialchars(trim($_POST['password']));
+
+            return $this->user->register($username, $email, $password);
+        }
+        return '';
+    }
+}
+
 require_once 'Database.php';
 require_once 'User.php';
 
 $db = new Database();
 $pdo = $db->connect();
 $user = new User($pdo);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = htmlspecialchars(trim($_POST['username']));
-    $email = htmlspecialchars(trim($_POST['email']));
-    $password = htmlspecialchars(trim($_POST['password']));
-
-    $message = $user->register($username, $email, $password);
-    echo $message;
-}
+$register = new Register($user);
+$message = $register->handleRequest();
 ?>
-
-
-
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,30 +37,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/register.css"> 
     <style>
-         body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to right, #6a11cb, #2575fc); /* Dégradé de fond */
-    margin: 0;
-    padding: 0;
-} 
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+        } 
     </style>
 </head>
 <body>
-    <div class ="logo">
+    <div class="logo">
         <a href="index.php">
-        <img src="img/log.png" alt="logo" class ="logo">
+            <img src="img/log.png" alt="logo" class="logo">
         </a>
     </div>
     <div class="login-container">
         <h2>Inscription</h2>
+        <?php if (!empty($message)) echo "<p>$message</p>"; ?>
         <form action="register.php" method="post">
-            <div class="profile-pic">
-                <img id="profileImage" src="" alt="Profile Picture">
-            </div>
-
-            <span class="upload-text" onclick="document.getElementById('file').click();">Ajouter une photo de profil</span>
-            <input type="file" id="file" class="file-input" accept="image/*" onchange="loadFile(event)" style="display:none;">
-            </br></br>
             <div class="input-group">
                 <label for="username">Nom d'utilisateur:</label>
                 <input type="text" id="Username" name="username" required>
