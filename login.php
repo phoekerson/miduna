@@ -1,30 +1,31 @@
 <?php
-class Login {
-    private $auth;
+class Auth {
+    private $pdo;
 
-    public function __construct(Auth $auth) {
-        $this->auth = $auth;
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
     }
 
-    public function handleRequest() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = htmlspecialchars(trim($_POST['email']));
-            $password = htmlspecialchars(trim($_POST['password']));
+    public function login($email, $password) {
+        // Requête pour vérifier les identifiants de l'utilisateur
+        $stmt = $this->pdo->prepare("SELECT id, email, password FROM users WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
 
-            return $this->auth->login($email, $password);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password'])) {
+            // Si les identifiants sont corrects, démarrer la session et stocker l'email
+            session_start();
+            $_SESSION['user_email'] = $user['email']; // Stocke l'email de l'utilisateur dans la session
+            $_SESSION['user_id'] = $user['id']; // Stocke également l'ID de l'utilisateur pour l'identifier dans les commentaires
+            return ''; // Connexion réussie, pas de message d'erreur
         }
-        return '';
+
+        return 'Identifiants invalides.';
     }
 }
 
-require_once 'Database.php';
-require_once 'Auth.php';
-
-$db = new Database();
-$pdo = $db->connect();
-$auth = new Auth($pdo);
-$login = new Login($auth);
-$message = $login->handleRequest();
 ?>
 
 <!DOCTYPE html>

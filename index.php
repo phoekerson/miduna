@@ -22,14 +22,6 @@
                         <li><a href="publier.php">Publier une recette</a></li>
                     </ul>
                 </div>
-                <a href="login.php" class="nav-link">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    Se connecter
-                </a>
                 <a href="profil.php" class="nav-link">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
                         <circle cx="12" cy="7" r="4"></circle>

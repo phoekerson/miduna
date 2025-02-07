@@ -56,5 +56,11 @@ class VideoManager {
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getVideoById($id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM uploads WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
 }
 ?>

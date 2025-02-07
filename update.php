@@ -41,14 +41,32 @@ class VideoManager {
     }
 
     public function updateVideo($videoId, $newTitle, $videoPath, $thumbnailPath) {
-        $query = "UPDATE uploads SET video_title = :title, video_path = :video_path, thumbnail_path = :thumbnail_path WHERE id = :id";
+        $query = "UPDATE uploads SET video_title = :title";
+        
+        if ($videoPath !== null) {
+            $query .= ", video_path = :video_path";
+        }
+        if ($thumbnailPath !== null) {
+            $query .= ", thumbnail_path = :thumbnail_path";
+        }
+        
+        $query .= " WHERE id = :id";
+        
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':title', $newTitle, PDO::PARAM_STR);
-        $stmt->bindValue(':video_path', $videoPath, PDO::PARAM_STR);
-        $stmt->bindValue(':thumbnail_path', $thumbnailPath, PDO::PARAM_STR);
+        
+        if ($videoPath !== null) {
+            $stmt->bindValue(':video_path', $videoPath, PDO::PARAM_STR);
+        }
+        
+        if ($thumbnailPath !== null) {
+            $stmt->bindValue(':thumbnail_path', $thumbnailPath, PDO::PARAM_STR);
+        }
+        
         $stmt->bindValue(':id', $videoId, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    
 
     public function uploadFile($file, $destinationDir) {
         $fileName = basename($file['name']);
@@ -57,6 +75,7 @@ class VideoManager {
         move_uploaded_file($fileTmpName, $filePath);
         return $filePath;
     }
+    
 }
 
 // Vérifier si l'utilisateur est connecté
@@ -90,10 +109,12 @@ if (isset($_GET['id'])) {
                 $thumbnailPath = $videoManager->uploadFile($_FILES['thumbnail'], 'thumbnails/');
             }
 
-            // Vérification de la nouvelle vidéo
-            if (!empty($_FILES['video']['name'])) {
-                $videoPath = $videoManager->uploadFile($_FILES['video'], 'videos/');
+            
+            // Vérification de la nouvelle miniature
+            if (!empty($_FILES['thumbnail']['name'])) {
+                $thumbnailPath = $videoManager->uploadFile($_FILES['thumbnail'], 'uploads/');
             }
+
 
             // Mettre à jour les informations de la vidéo dans la base de données
             if ($videoManager->updateVideo($videoId, $newTitle, $videoPath, $thumbnailPath)) {
@@ -119,7 +140,7 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier la vidéo</title>
-    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/update.css">
 </head>
 <body>
     <div class="container">

@@ -52,6 +52,7 @@ class VideoUploader
 
             if ($stmt->execute()) {
                 return "Vidéo et miniature enregistrées avec succès dans la base de données !";
+                header("location:profil.php");
             } else {
                 return "Erreur lors de l'enregistrement dans la base de données.";
             }
@@ -86,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publier une vidéo</title>
-    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/push.css">
 </head>
 <body>
     <h1>Publier une vidéo</h1>
